@@ -1,4 +1,8 @@
-require('dotenv').config()
+const dotenvConfig = {
+  path: process.env.NODE_ENV === 'development' ? 'development.env' : '.env'
+}
+
+require('dotenv').config(dotenvConfig)
 
 const express = require('express')
 const compression = require('compression')
