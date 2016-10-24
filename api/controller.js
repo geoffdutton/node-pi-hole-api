@@ -12,6 +12,10 @@ const extraVars = {
   gravityCount: parseInt(childProcess.spawnSync('wc', ['-l', process.env.PI_HOLE_GRAVITY_PATH]).stdout)
 }
 
+if (setupVars.IPv6_address) {
+  extraVars.gravityCount /= 2
+}
+
 const store = new LogStore(tail.stdout, setupVars, extraVars)
 
 exports.getSummary = function () {
