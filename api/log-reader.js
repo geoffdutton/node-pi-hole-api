@@ -1,13 +1,19 @@
 const through2 = require('through2')
-const split = require('split')
 const moment = require('moment')
-const pipe = require('multipipe')
 
 const logRegex = /^(\w{3} \d\d \d\d:\d\d:\d\d) dnsmasq\[\d+\]: (reply (.+?) is (.+?)|query\[(.+?)\] (.+?) from (.+?)|forwarded (.+?) to (.+?)|config (.+?) is (.+?)|.+?\/gravity.list (.+?) is (.+?)|cached (.+?) is (.+?))$/
 
-const lineLogReader = through2.ctor({objectMode: true}, (chunk, enc, cb) => {
-  const line = chunk.toString()
+const logReader = through2.ctor({objectMode: true}, (chunk, enc, cb) => {
+  const line = chunk.toString().trim()
+  if (!line) {
+    cb()
+    return
+  }
   const match = logRegex.exec(line)
+  if (!match) {
+    cb(null, {type: 'unknown', line, args: [line]})
+    return
+  }
   const date = moment(match[1], 'MMM DD HH:mm:ss')
   const [,,, reply1, reply2, query1, query2, query3, forwarded1, forwarded2, config1, config2, gravity1, gravity2, cached1, cached2] = match
   let type = 'unknown'
@@ -39,14 +45,13 @@ const lineLogReader = through2.ctor({objectMode: true}, (chunk, enc, cb) => {
   })
 })
 
-const logReader = () => pipe(split(), lineLogReader())
-
 module.exports = logReader
 
 if (require.main === module) {
   const spawn = require('child_process').spawn
   const ssh = spawn('ssh', ['-t', 'pi@pi.local', 'sudo tail -f -n 50 /var/log/pihole.log'])
   ssh.stdout
+    .pipe(require('split')())
     .pipe(logReader())
     .pipe(through2.obj((chunk, enc, cb) => {
       process.stdout.write(JSON.stringify(chunk, null, 2).replace('\n', ''))
