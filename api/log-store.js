@@ -9,10 +9,12 @@ class LogStore {
     this.extraVars = extraVars
     this.logs = []
     this.maxLogLength = 2000
-    this.queryCount = 0
-    this.adsCount = 0
+    this.totalQueryCount = 0
+    this.totalAdsCount = 0
     this.domainsOverTime = []
     this.adsOverTime = []
+    this.domainsCount = {}
+    this.adsCount = {}
     this._start()
   }
 
@@ -40,8 +42,10 @@ class LogStore {
   }
 
   _handleQuery (data) {
-    this.queryCount++
+    this.totalQueryCount++
     this._addOverTimeData(data, this.domainsOverTime)
+    const domain = data.args[1]
+    this.domainsCount[domain] = (this.domainsCount[domain] | 0) + 1
   }
 
   _handleGravity (data) {
@@ -53,8 +57,10 @@ class LogStore {
       ) {
       return
     }
-    this.adsCount++
+    this.totalAdsCount++
     this._addOverTimeData(data, this.adsOverTime)
+    const domain = data.args[0]
+    this.adsCount[domain] = (this.adsCount[domain] | 0) + 1
   }
 
   _addOverTimeData (data, arr) {
@@ -78,8 +84,8 @@ class LogStore {
     }
     return {
       domains_being_blocked: this.extraVars.gravityCount,
-      dns_queries_today: this.queryCount,
-      ads_blocked_today: this.adsCount,
+      dns_queries_today: this.totalQueryCount,
+      ads_blocked_today: this.totalAdsCount,
       ads_percentage_today: adsPercent
     }
   }
@@ -95,6 +101,17 @@ class LogStore {
     return {
       domains_over_time: this._getOverTimeData(this.domainsOverTime),
       ads_over_time: this._getOverTimeData(this.adsOverTime)
+    }
+  }
+
+  _getTopItems (counts) {
+    return _(counts).toPairs().orderBy('1', 'desc').take(10).fromPairs()
+  }
+
+  topItems () {
+    return {
+      top_queries: this._getTopItems(this.domainsCount),
+      top_ads: this._getTopItems(this.adsCount)
     }
   }
 }

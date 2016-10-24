@@ -3,16 +3,21 @@ const controller = require('./controller')
 
 const router = express.Router()
 
-function getSummary (req, res) {
-  res.send(controller.getSummary())
+function summary (req, res) {
+  res.send(controller.summary())
 }
 
 function overTimeData (req, res) {
-  res.send(controller.getOverTimeData())
+  res.send(controller.overTimeData())
 }
 
-router.get('/', getSummary)
-router.get('/summary', getSummary)
+function topItems (req, res) {
+  res.send(controller.topItems())
+}
+
+router.get('/', summary)
+router.get('/summary', summary)
 router.get('/overTimeData', overTimeData)
+router.get('/topItems', topItems)
 
 module.exports = router

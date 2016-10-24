@@ -18,10 +18,4 @@ if (setupVars.IPv6_address) {
 
 const store = new LogStore(tail.stdout, setupVars, extraVars)
 
-exports.getSummary = function () {
-  return store.summary()
-}
-
-exports.getOverTimeData = function () {
-  return store.overTimeData()
-}
+module.exports = store
