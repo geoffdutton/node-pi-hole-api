@@ -114,6 +114,22 @@ class LogStore {
       top_ads: this._getTopItems(this.adsCount)
     }
   }
+
+  recentItems (count) {
+    const queries = _(this.logs)
+        .filter({type: 'query'})
+        .takeRight(count)
+        .map((data) => ({
+          date: data.date.format('YYYY-MM-DD'),
+          time: data.date.format('h:m:s a'),
+          domain: data.args[1],
+          ip: data.args[2]
+        }))
+        .value()
+    return {
+      recent_queries: queries
+    }
+  }
 }
 
 module.exports = LogStore

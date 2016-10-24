@@ -15,9 +15,14 @@ function topItems (req, res) {
   res.send(controller.topItems())
 }
 
+function recentItems (req, res) {
+  res.send(controller.recentItems(req.query.count || 20))
+}
+
 router.get('/', summary)
 router.get('/summary', summary)
 router.get('/overTimeData', overTimeData)
 router.get('/topItems', topItems)
+router.get('/recentItems', recentItems)
 
 module.exports = router
