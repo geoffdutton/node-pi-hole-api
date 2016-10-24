@@ -5,7 +5,7 @@ const fs = require('fs')
 
 const LogStore = require('./log-store')
 
-const tail = childProcess.spawn('tail', ['-f', '-n', '+1', process.env.PI_HOLE_LOG_PATH])
+const tail = childProcess.spawn('tail', ['-f', '-n', '1000', process.env.PI_HOLE_LOG_PATH])
 const setupVars = ini.parse(fs.readFileSync(process.env.PI_HOLE_SETUP_VARS_PATH, 'utf-8'))
 const extraVars = {
   hostname: os.hostname(),
