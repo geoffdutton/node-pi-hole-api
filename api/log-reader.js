@@ -1,7 +1,7 @@
 const through2 = require('through2')
 const moment = require('moment')
 
-const logRegex = /^(\w{3} \d\d \d\d:\d\d:\d\d) dnsmasq\[\d+\]: (reply (.+?) is (.+?)|query\[(.+?)\] (.+?) from (.+?)|forwarded (.+?) to (.+?)|config (.+?) is (.+?)|.+?\/gravity.list (.+?) is (.+?)|cached (.+?) is (.+?))$/
+const logRegex = /^(\w{3} \d\d \d\d:\d\d:\d\d) dnsmasq\[\d+\]: (reply (.+?) is (.+?)|query\[(.+?)\] (.+?) from (.+?)|forwarded (.+?) to (.+?)|config (.+?) is (.+?)|.+?\/gravity.list (.+?) is (.+?)|cached (.+?) is (.+?)|read (.+?) - (.+?) addresses)$/
 
 const logReader = through2.ctor({objectMode: true}, (chunk, enc, cb) => {
   const line = chunk.toString().trim()
@@ -15,7 +15,7 @@ const logReader = through2.ctor({objectMode: true}, (chunk, enc, cb) => {
     return
   }
   const date = moment(match[1], 'MMM DD HH:mm:ss')
-  const [,,, reply1, reply2, query1, query2, query3, forwarded1, forwarded2, config1, config2, gravity1, gravity2, cached1, cached2] = match
+  const [,,, reply1, reply2, query1, query2, query3, forwarded1, forwarded2, config1, config2, gravity1, gravity2, cached1, cached2, read1, read2] = match
   let type = 'unknown'
   let args = [line]
   if (reply1) {
@@ -36,6 +36,9 @@ const logReader = through2.ctor({objectMode: true}, (chunk, enc, cb) => {
   } else if (cached1) {
     type = 'cached'
     args = [cached1, cached2]
+  } else if (read1) {
+    type = 'read'
+    args = [read1, read2]
   }
   cb(null, {
     line,
