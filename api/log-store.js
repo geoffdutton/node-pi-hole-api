@@ -15,6 +15,7 @@ class LogStore {
     this.adsOverTime = []
     this.domainsCount = {}
     this.adsCount = {}
+    this.queryTypesCount = {}
     this._start()
   }
 
@@ -44,8 +45,9 @@ class LogStore {
   _handleQuery (data) {
     this.totalQueryCount++
     this._addOverTimeData(data, this.domainsOverTime)
-    const domain = data.args[1]
+    const [queryType, domain] = data.args
     this.domainsCount[domain] = (this.domainsCount[domain] | 0) + 1
+    this.queryTypesCount[queryType] = (this.queryTypesCount[queryType] | 0) + 1
   }
 
   _handleGravity (data) {
@@ -129,6 +131,10 @@ class LogStore {
     return {
       recent_queries: queries
     }
+  }
+
+  queryTypes () {
+    return _.mapKeys(this.queryTypesCount, (val, key) => `query[${key}]`)
   }
 }
 
