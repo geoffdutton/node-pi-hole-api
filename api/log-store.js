@@ -17,6 +17,7 @@ class LogStore {
     this.adsCount = {}
     this.queryTypesCount = {}
     this.forwardDest = {}
+    this.querySourcCount = {}
     this._start()
   }
 
@@ -46,9 +47,10 @@ class LogStore {
   _handleQuery (data) {
     this.totalQueryCount++
     this._addOverTimeData(data, this.domainsOverTime)
-    const [queryType, domain] = data.args
+    const [queryType, domain, source] = data.args
     this.domainsCount[domain] = (this.domainsCount[domain] | 0) + 1
     this.queryTypesCount[queryType] = (this.queryTypesCount[queryType] | 0) + 1
+    this.querySourcCount[source] = (this.querySourcCount[source] | 0) + 1
   }
 
   _handleGravity (data) {
@@ -145,6 +147,12 @@ class LogStore {
 
   forwardDestinations () {
     return this.forwardDest
+  }
+
+  querySources () {
+    return {
+      top_sources: this._getTopItems(this.querySourcCount)
+    }
   }
 }
 

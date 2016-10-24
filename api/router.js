@@ -27,6 +27,10 @@ function forwardDestinations (req, res) {
   res.send(controller.forwardDestinations())
 }
 
+function querySources (req, res) {
+  res.send(controller.querySources())
+}
+
 router.get('/', summary)
 router.get('/summary', summary)
 router.get('/overTimeData', overTimeData)
@@ -34,5 +38,6 @@ router.get('/topItems', topItems)
 router.get('/recentItems', recentItems)
 router.get('/queryTypes', queryTypes)
 router.get('/forwardDestinations', forwardDestinations)
+router.get('/querySources', querySources)
 
 module.exports = router
