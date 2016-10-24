@@ -31,6 +31,14 @@ function querySources (req, res) {
   res.send(controller.querySources())
 }
 
+function queries (req, res) {
+  res.send({
+    data: controller.queries().map(({date, queryType, domain, source, status}) => [
+      date.format('YYYY-MM-DDTHH:mm:ss'), queryType, domain, source, status
+    ])
+  })
+}
+
 router.get('/', summary)
 router.get('/summary', summary)
 router.get('/overTimeData', overTimeData)
@@ -39,5 +47,6 @@ router.get('/recentItems', recentItems)
 router.get('/queryTypes', queryTypes)
 router.get('/forwardDestinations', forwardDestinations)
 router.get('/querySources', querySources)
+router.get('/queries', queries)
 
 module.exports = router

@@ -26,10 +26,6 @@ class LogStore {
       .pipe(split())
       .pipe(logReader())
       .on('data', (data) => {
-        this.logs.push(data)
-        if (this.logs.length > this.maxLogLength) {
-          this.logs.shift()
-        }
         const fn = this['_handle' + _.capitalize(data.type)]
         if (fn) {
           fn.call(this, data)
@@ -51,6 +47,16 @@ class LogStore {
     this.domainsCount[domain] = (this.domainsCount[domain] | 0) + 1
     this.queryTypesCount[queryType] = (this.queryTypesCount[queryType] | 0) + 1
     this.querySourcCount[source] = (this.querySourcCount[source] | 0) + 1
+    this.logs.push({
+      date: data.date,
+      queryType,
+      domain,
+      source,
+      status: 'Querying'
+    })
+    if (this.logs.length > this.maxLogLength) {
+      this.logs.shift()
+    }
   }
 
   _handleGravity (data) {
@@ -60,17 +66,37 @@ class LogStore {
       data.args[1] === 'pi.hole' ||
       data.args[1] === this.extraVars.hostname
       ) {
+      const log = _.findLast(this.logs, {domain: data.args[0], status: 'Querying'})
+      if (log) {
+        log.status = 'OK'
+      }
       return
     }
     this.totalAdsCount++
     this._addOverTimeData(data, this.adsOverTime)
     const domain = data.args[0]
     this.adsCount[domain] = (this.adsCount[domain] | 0) + 1
+    const log = _.findLast(this.logs, {domain: domain, status: 'Querying'})
+    if (log) {
+      log.status = 'Pi-holed'
+    }
   }
 
   _handleForwarded (data) {
-    const dest = data.args[1]
+    const [domain, dest] = data.args
     this.forwardDest[dest] = (this.forwardDest[dest] | 0) + 1
+    const log = _.findLast(this.logs, {domain: domain})
+    if (log) {
+      log.status = 'OK'
+    }
+  }
+
+  _handleCached (data) {
+    const domain = data.args[0]
+    const log = _.findLast(this.logs, {domain: domain})
+    if (log) {
+      log.status = 'OK'
+    }
   }
 
   _addOverTimeData (data, arr) {
@@ -127,13 +153,12 @@ class LogStore {
 
   recentItems (count) {
     const queries = _(this.logs)
-        .filter({type: 'query'})
         .takeRight(count)
         .map((data) => ({
           date: data.date.format('YYYY-MM-DD'),
           time: data.date.format('h:m:s a'),
-          domain: data.args[1],
-          ip: data.args[2]
+          domain: data.domain,
+          ip: data.source
         }))
         .value()
     return {
@@ -153,6 +178,10 @@ class LogStore {
     return {
       top_sources: this._getTopItems(this.querySourcCount)
     }
+  }
+
+  queries () {
+    return this.logs
   }
 }
 
