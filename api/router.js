@@ -23,11 +23,16 @@ function queryTypes (req, res) {
   res.send(controller.queryTypes())
 }
 
+function forwardDestinations (req, res) {
+  res.send(controller.forwardDestinations())
+}
+
 router.get('/', summary)
 router.get('/summary', summary)
 router.get('/overTimeData', overTimeData)
 router.get('/topItems', topItems)
 router.get('/recentItems', recentItems)
 router.get('/queryTypes', queryTypes)
+router.get('/forwardDestinations', forwardDestinations)
 
 module.exports = router

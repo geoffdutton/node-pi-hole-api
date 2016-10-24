@@ -16,6 +16,7 @@ class LogStore {
     this.domainsCount = {}
     this.adsCount = {}
     this.queryTypesCount = {}
+    this.forwardDest = {}
     this._start()
   }
 
@@ -63,6 +64,11 @@ class LogStore {
     this._addOverTimeData(data, this.adsOverTime)
     const domain = data.args[0]
     this.adsCount[domain] = (this.adsCount[domain] | 0) + 1
+  }
+
+  _handleForwarded (data) {
+    const dest = data.args[1]
+    this.forwardDest[dest] = (this.forwardDest[dest] | 0) + 1
   }
 
   _addOverTimeData (data, arr) {
@@ -135,6 +141,10 @@ class LogStore {
 
   queryTypes () {
     return _.mapKeys(this.queryTypesCount, (val, key) => `query[${key}]`)
+  }
+
+  forwardDestinations () {
+    return this.forwardDest
   }
 }
 
