@@ -1,8 +1,19 @@
+const childProcess = require('child_process')
+const ini = require('ini')
+const os = require('os')
+const fs = require('fs')
+
+const LogStore = require('./log-store')
+
+const tail = childProcess.spawn('tail', ['-f', '-n', '+1', process.env.PI_HOLE_LOG_PATH])
+const setupVars = ini.parse(fs.readFileSync(process.env.PI_HOLE_SETUP_VARS_PATH, 'utf-8'))
+const extraVars = {
+  hostname: os.hostname(),
+  gravityCount: parseInt(childProcess.spawnSync('wc', ['-l', process.env.PI_HOLE_GRAVITY_PATH]).stdout)
+}
+
+const store = new LogStore(tail.stdout, setupVars, extraVars)
+
 exports.getSummary = function () {
-  return {
-    domains_being_blocked: 123,
-    dns_queries_today: 456,
-    ads_blocked_today: 789,
-    ads_percentage_today: 10
-  }
+  return store.summary()
 }
