@@ -21,3 +21,7 @@ const store = new LogStore(tail.stdout, setupVars, extraVars)
 exports.getSummary = function () {
   return store.summary()
 }
+
+exports.getOverTimeData = function () {
+  return store.overTimeData()
+}
