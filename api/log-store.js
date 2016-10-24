@@ -115,8 +115,8 @@ class LogStore {
 
   summary () {
     let adsPercent = 0
-    if (this.queryCount) {
-      adsPercent = this.adsCount / this.queryCount * 100
+    if (this.totalQueryCount) {
+      adsPercent = this.totalAdsCount / this.totalQueryCount * 100
     }
     return {
       domains_being_blocked: this.extraVars.gravityCount,
@@ -181,7 +181,11 @@ class LogStore {
   }
 
   queries () {
-    return this.logs
+    return {
+      data: this.logs.map(({date, queryType, domain, source, status}) => [
+        date.format('YYYY-MM-DDTHH:mm:ss'), queryType, domain, source, status
+      ])
+    }
   }
 }
 

@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const express = require('express')
 const controller = require('./controller')
 
@@ -32,14 +33,50 @@ function querySources (req, res) {
 }
 
 function queries (req, res) {
-  res.send({
-    data: controller.queries().map(({date, queryType, domain, source, status}) => [
-      date.format('YYYY-MM-DDTHH:mm:ss'), queryType, domain, source, status
-    ])
-  })
+  res.send(controller.queries())
 }
 
-router.get('/', summary)
+function apiHandler (req, res) {
+  if (_.isEmpty(req.query)) {
+    return summary(req, res)
+  }
+  let result = {}
+  if (req.query.summaryRaw != null) {
+    _.assign(result, controller.summary())
+  }
+  if (req.query.summary != null) {
+    let summary = controller.summary()
+    _.assign(result, {
+      ads_blocked_today: summary.ads_blocked_today.toLocaleString(),
+      dns_queries_today: summary.dns_queries_today.toLocaleString(),
+      ads_percentage_today: summary.ads_percentage_today.toFixed(1),
+      domains_being_blocked: summary.domains_being_blocked.toLocaleString()
+    })
+  }
+  if (req.query.overTimeData != null) {
+    _.assign(result, controller.overTimeData())
+  }
+  if (req.query.topItems != null) {
+    _.assign(result, controller.topItems())
+  }
+  if (req.query.recentItems != null) {
+    _.assign(result, controller.recentItems(req.query.recentItems || 20))
+  }
+  if (req.query.getQueryTypes != null) {
+    _.assign(result, controller.queryTypes())
+  }
+  if (req.query.getForwardDestinations != null) {
+    _.assign(result, controller.forwardDestinations())
+  }
+  if (req.query.getQuerySources != null) {
+    _.assign(result, controller.querySources())
+  }
+  if (req.query.getAllQueries != null) {
+    _.assign(result, controller.queries())
+  }
+  res.send(result)
+}
+
 router.get('/summary', summary)
 router.get('/overTimeData', overTimeData)
 router.get('/topItems', topItems)
@@ -48,5 +85,7 @@ router.get('/queryTypes', queryTypes)
 router.get('/forwardDestinations', forwardDestinations)
 router.get('/querySources', querySources)
 router.get('/queries', queries)
+
+router.get('/', apiHandler)
 
 module.exports = router

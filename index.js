@@ -16,6 +16,7 @@ app.use(compression())
 app.use(logger('dev'))
 
 app.use('/api', apiRouter)
+app.use('/admin/api.php', apiRouter)
 
 app.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'))
