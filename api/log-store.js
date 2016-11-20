@@ -113,16 +113,20 @@ class LogStore {
     }
   }
 
-  summary () {
+  get totalAdsPercent () {
     let adsPercent = 0
     if (this.totalQueryCount) {
       adsPercent = this.totalAdsCount / this.totalQueryCount * 100
     }
+    return adsPercent
+  }
+
+  summary () {
     return {
       domains_being_blocked: this.extraVars.gravityCount,
-      dns_queries_today: this.totalQueryCount,
-      ads_blocked_today: this.totalAdsCount,
-      ads_percentage_today: adsPercent
+      dns_queries: this.totalQueryCount,
+      ads_blocked: this.totalAdsCount,
+      ads_percentage: this.totalAdsPercent
     }
   }
 
