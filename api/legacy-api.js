@@ -4,27 +4,19 @@ const controller = require('./controller')
 
 const router = express.Router()
 
-async function summary () {
-  return {
-    domains_being_blocked: controller.extraVars.gravityCount,
-    dns_queries_today: controller.totalQueryCount,
-    ads_blocked_today: controller.totalAdsCount,
-    ads_percentage_today: controller.totalAdsPercent
-  }
-}
-
 async function apiHandler (req, res) {
   try {
     if (_.isEmpty(req.query)) {
       res.send(await controller.summary())
       return
     }
+    const query = req.query
     let result = {}
-    if (req.query.summaryRaw != null) {
+    if (query.hasOwnProperty('summaryRaw')) {
       _.assign(result, await controller.summary())
     }
-    if (req.query.summary != null) {
-      let res = await controller.summary()
+    if (query.hasOwnProperty('summaryRaw')) {
+      const res = await controller.summary()
       _.assign(result, {
         ads_blocked_today: res.ads_blocked_today.toLocaleString(),
         dns_queries_today: res.dns_queries_today.toLocaleString(),
@@ -32,32 +24,35 @@ async function apiHandler (req, res) {
         domains_being_blocked: res.domains_being_blocked.toLocaleString()
       })
     }
-    if (req.query.overTimeData != null || req.query.overTimeData10mins != null) {
+    if (query.hasOwnProperty('overTimeData') || query.hasOwnProperty('overTimeData10mins')) {
       const _result = await controller.overTimeData()
       _.assign(result, _result)
     }
-    if (req.query.topItems != null) {
+    if (query.hasOwnProperty('topItems')) {
       _.assign(result, controller.topItems())
     }
-    if (req.query.recentItems != null) {
-      _.assign(result, controller.recentItems(req.query.recentItems || 20))
+    if (query.hasOwnProperty('recentItems')) {
+      _.assign(result, controller.recentItems(query.recentItems || 20))
     }
-    if (req.query.getQueryTypes != null) {
+    if (query.hasOwnProperty('getQueryTypes')) {
       _.assign(result, controller.queryTypes())
     }
-    if (req.query.getForwardDestinations != null) {
-      _.assign(result, controller.forwardDestinations())
+    if (query.hasOwnProperty('type') || query.hasOwnProperty('version')) {
+      _.assign(result, {
+        type: 'FTL',
+        version: 3
+      })
     }
-    if (req.query.getQuerySources != null) {
-      _.assign(result, controller.querySources())
-    }
-    if (req.query.getAllQueries != null) {
-      _.assign(result, controller.queries())
+
+    if (_.isEmpty(result)) {
+      const err = new Error(`Method not implemented yet`)
+      err.code = 'MethodNotImplemented'
+      throw err
     }
     res.send(result)
   } catch (e) {
     console.error(e)
-    res.status(500).send(e)
+    res.status(500).send({ errorCode: e.code, error: e.message, query: req.query })
   }
 }
 

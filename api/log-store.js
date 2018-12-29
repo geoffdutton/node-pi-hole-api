@@ -4,9 +4,8 @@ const logReader = require('./log-reader')
 const PiHoleFTL = require('./pihole-ftl')
 
 class LogStore {
-  constructor (input, setupVars, extraVars) {
+  constructor (input, extraVars) {
     this.input = input
-    this.setupVars = setupVars
     this.extraVars = extraVars
     this.ftl = new PiHoleFTL()
     this.logs = []
@@ -193,17 +192,10 @@ module.exports = LogStore
 if (require.main === module) {
   const spawn = require('child_process').spawn
   const ssh = spawn('ssh', ['-t', 'pi@pi.local', 'sudo tail -f -n +0 /var/log/pihole.log'])
-  const setupVars = {
-    piholeInterface: 'eth0',
-    IPv4_address: '192.168.1.10/24',
-    IPv6_address: 'fe80::6ff8:2c35:da5f:4fc6',
-    piholeDNS1: '8.8.8.8',
-    piholeDNS2: '8.8.4.4'
-  }
   const extraVars = {
     gravityCount: 123,
     hostname: 'pi'
   }
 
-  void new LogStore(ssh.stdout, setupVars, extraVars)
+  void new LogStore(ssh.stdout, extraVars)
 }
