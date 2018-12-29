@@ -15,7 +15,7 @@ async function apiHandler (req, res) {
     if (query.hasOwnProperty('summaryRaw')) {
       _.assign(result, await controller.summary())
     }
-    if (query.hasOwnProperty('summaryRaw')) {
+    if (query.hasOwnProperty('summary')) {
       const res = await controller.summary()
       _.assign(result, {
         ads_blocked_today: res.ads_blocked_today.toLocaleString(),
