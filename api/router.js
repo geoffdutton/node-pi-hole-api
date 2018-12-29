@@ -4,7 +4,7 @@ const controller = require('./controller')
 const router = express.Router()
 
 function summary (req, res) {
-  res.send(controller.summary())
+  res.send(controller.summary(req))
 }
 
 function overTimeData (req, res) {

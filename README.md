@@ -57,3 +57,11 @@ server {
 
 The existing php API server is super inefficient that is unusable on my Raspberry Pi Model A.
 Therefore I want a faster working replacement of the API server.
+
+## Development Tips
+
+If you have the `pihole-FTL` service running on your Raspberry-PI, you can forward that port via SSH:
+```bash
+ssh -L 4711:localhost:4711 user@ssh-host
+```
+

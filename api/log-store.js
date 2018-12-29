@@ -1,12 +1,14 @@
 const _ = require('lodash')
 const split = require('split')
 const logReader = require('./log-reader')
+const PiHoleFTL = require('./pihole-ftl')
 
 class LogStore {
   constructor (input, setupVars, extraVars) {
     this.input = input
     this.setupVars = setupVars
     this.extraVars = extraVars
+    this.ftl = new PiHoleFTL()
     this.logs = []
     this.maxLogLength = 2000
     this.totalQueryCount = 0
@@ -121,13 +123,9 @@ class LogStore {
     return adsPercent
   }
 
-  summary () {
-    return {
-      domains_being_blocked: this.extraVars.gravityCount,
-      dns_queries: this.totalQueryCount,
-      ads_blocked: this.totalAdsCount,
-      ads_percentage: this.totalAdsPercent
-    }
+  async summary () {
+    const data = await this.ftl.stats()
+    return data
   }
 
   _getOverTimeData (arr) {
@@ -137,11 +135,8 @@ class LogStore {
     }, {})
   }
 
-  overTimeData () {
-    return {
-      domains_over_time: this._getOverTimeData(this.domainsOverTime),
-      ads_over_time: this._getOverTimeData(this.adsOverTime)
-    }
+  async overTimeData () {
+    return this.ftl.overTime()
   }
 
   _getTopItems (counts) {
