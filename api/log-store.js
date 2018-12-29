@@ -65,8 +65,8 @@ class LogStore {
       data.args[0] === this.extraVars.hostname ||
       data.args[1] === 'pi.hole' ||
       data.args[1] === this.extraVars.hostname
-      ) {
-      const log = _.findLast(this.logs, {domain: data.args[0], status: 'Querying'})
+    ) {
+      const log = _.findLast(this.logs, { domain: data.args[0], status: 'Querying' })
       if (log) {
         log.status = 'OK'
       }
@@ -76,7 +76,7 @@ class LogStore {
     this._addOverTimeData(data, this.adsOverTime)
     const domain = data.args[0]
     this.adsCount[domain] = (this.adsCount[domain] | 0) + 1
-    const log = _.findLast(this.logs, {domain: domain, status: 'Querying'})
+    const log = _.findLast(this.logs, { domain: domain, status: 'Querying' })
     if (log) {
       log.status = 'Pi-holed'
     }
@@ -85,7 +85,7 @@ class LogStore {
   _handleForwarded (data) {
     const [domain, dest] = data.args
     this.forwardDest[dest] = (this.forwardDest[dest] | 0) + 1
-    const log = _.findLast(this.logs, {domain: domain})
+    const log = _.findLast(this.logs, { domain: domain })
     if (log) {
       log.status = 'OK'
     }
@@ -93,7 +93,7 @@ class LogStore {
 
   _handleCached (data) {
     const domain = data.args[0]
-    const log = _.findLast(this.logs, {domain: domain})
+    const log = _.findLast(this.logs, { domain: domain })
     if (log) {
       log.status = 'OK'
     }
@@ -131,7 +131,7 @@ class LogStore {
   }
 
   _getOverTimeData (arr) {
-    return _(arr).takeRight(24).reduce((result, {hour, count}) => {
+    return _(arr).takeRight(24).reduce((result, { hour, count }) => {
       result[hour] = count
       return result
     }, {})
@@ -157,14 +157,14 @@ class LogStore {
 
   recentItems (count) {
     const queries = _(this.logs)
-        .takeRight(count)
-        .map((data) => ({
-          date: data.date.format('YYYY-MM-DD'),
-          time: data.date.format('h:m:s a'),
-          domain: data.domain,
-          ip: data.source
-        }))
-        .value()
+      .takeRight(count)
+      .map((data) => ({
+        date: data.date.format('YYYY-MM-DD'),
+        time: data.date.format('h:m:s a'),
+        domain: data.domain,
+        ip: data.source
+      }))
+      .value()
     return {
       recent_queries: queries
     }
@@ -186,7 +186,7 @@ class LogStore {
 
   queries () {
     return {
-      data: this.logs.map(({date, queryType, domain, source, status}) => [
+      data: this.logs.map(({ date, queryType, domain, source, status }) => [
         date.format('YYYY-MM-DDTHH:mm:ss'), queryType, domain, source, status
       ])
     }

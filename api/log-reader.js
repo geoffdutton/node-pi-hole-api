@@ -3,7 +3,7 @@ const moment = require('moment')
 
 const logRegex = /^(\w{3} \d\d \d\d:\d\d:\d\d) dnsmasq\[\d+\]: (reply (.+?) is (.+?)|query\[(.+?)\] (.+?) from (.+?)|forwarded (.+?) to (.+?)|config (.+?) is (.+?)|.+?\/gravity.list (.+?) is (.+?)|cached (.+?) is (.+?)|read (.+?) - (.+?) addresses)$/
 
-const logReader = through2.ctor({objectMode: true}, (chunk, enc, cb) => {
+const logReader = through2.ctor({ objectMode: true }, (chunk, enc, cb) => {
   const line = chunk.toString().trim()
   if (!line) {
     cb()
@@ -11,7 +11,7 @@ const logReader = through2.ctor({objectMode: true}, (chunk, enc, cb) => {
   }
   const match = logRegex.exec(line)
   if (!match) {
-    cb(null, {type: 'unknown', line, args: [line]})
+    cb(null, { type: 'unknown', line, args: [line] })
     return
   }
   const date = moment(match[1], 'MMM DD HH:mm:ss')
