@@ -1,7 +1,7 @@
 
 const net = require('net')
 const _ = require('lodash')
-const { parseStringNumber } = require('./utils')
+const { parseStringNumber, isInt } = require('./utils')
 
 const EOM = '---EOM---'
 
@@ -73,9 +73,8 @@ class PiHoleFTL {
     return { over_time: response }
   }
 
-  // 'ClientsoverTime'
   async getForwardDestinations (val) {
-    const lines = await this.send( val === 'unsorted' ? 'forward-dest unsorted' : 'forward-dest')
+    const lines = await this.send(val === 'unsorted' ? 'forward-dest unsorted' : 'forward-dest')
     const response = {}
     lines.forEach(line => {
       if (line.length > 3 && line[3].length > 0) {
@@ -86,6 +85,22 @@ class PiHoleFTL {
     })
 
     return { forward_destinations: response }
+  }
+
+  /**
+   *
+   * @param {object} query
+   * @returns {Promise<{data}>}
+   */
+  async getAllQueries (query) {
+    const baseVal = query.getAllQueries
+    let command = 'getallqueries'
+
+    if (isInt(baseVal)) {
+      command += ` (${baseVal})`
+    }
+
+    return { data: await this.send(command) }
   }
 
   send (command) {

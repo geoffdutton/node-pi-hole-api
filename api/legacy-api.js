@@ -42,6 +42,10 @@ async function apiHandler (req, res) {
       _.assign(result, await controller.ftl.getClientNames())
     }
 
+    if (query.hasOwnProperty('getAllQueries')) {
+      _.assign(result, await controller.ftl.getAllQueries(query.getAllQueries))
+    }
+
     if (query.hasOwnProperty('overTimeDataClients')) {
       _.assign(result, await controller.ftl.clientsOverTime())
     }
