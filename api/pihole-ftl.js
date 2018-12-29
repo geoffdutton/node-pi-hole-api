@@ -15,7 +15,6 @@ class PiHoleFTL {
 
   async stats () {
     const lines = await this.send('stats')
-    console.log('stats', lines)
     const response = {}
     lines.forEach(line => {
       const [key, val] = line.trim().split(' ')
@@ -27,7 +26,6 @@ class PiHoleFTL {
 
   async overTime () {
     const lines = await this.send('overTime')
-    console.log('overTime', lines)
     const response = {
       domains_over_time: {},
       ads_over_time: {}
@@ -49,7 +47,6 @@ class PiHoleFTL {
     return new Promise((resolve, reject) => {
       let response = ''
       const client = net.connect(this.port, () => { // 'connect' listener
-        console.log('client connected')
         this.client = client
         this.client.write(`>${command}\r\n`)
       })
@@ -57,13 +54,12 @@ class PiHoleFTL {
         response += data.toString()
 
         if (_.endsWith(_.trim(response), EOM)) {
-          console.log('\nraw response >>>', response, '>>>\n')
+          // console.log('\nraw response >>>', response, '>>>\n')
           resolve(this._parseRawResponse(response))
           client.end()
         }
       })
       client.on('end', () => {
-        console.log('client disconnected')
         this.client = null
       })
       client.on('error', reject)
