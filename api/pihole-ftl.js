@@ -73,6 +73,21 @@ class PiHoleFTL {
     return { over_time: response }
   }
 
+  // 'ClientsoverTime'
+  async getForwardDestinations (val) {
+    const lines = await this.send( val === 'unsorted' ? 'forward-dest unsorted' : 'forward-dest')
+    const response = {}
+    lines.forEach(line => {
+      if (line.length > 3 && line[3].length > 0) {
+        response[`${line[3]}|${line[2]}`] = parseFloat(line[1])
+      } else {
+        response[`${line[2]}`] = parseFloat(line[1])
+      }
+    })
+
+    return { forward_destinations: response }
+  }
+
   send (command) {
     return new Promise((resolve, reject) => {
       let response = ''

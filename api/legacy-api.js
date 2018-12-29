@@ -53,6 +53,11 @@ async function apiHandler (req, res) {
       })
     }
 
+    // 'getForwardDestinations'
+    if (query.hasOwnProperty('getForwardDestinations')) {
+      _.assign(result, await controller.ftl.getForwardDestinations(query.getForwardDestinations))
+    }
+
     if (_.isEmpty(result)) {
       const err = new Error(`Method not implemented yet`)
       err.code = 'MethodNotImplemented'

@@ -3,12 +3,12 @@ const controller = require('./controller')
 
 const router = express.Router()
 
-function summary (req, res) {
-  res.send(controller.summary(req))
+async function summary (req, res) {
+  res.send(await controller.summary())
 }
 
-function overTimeData (req, res) {
-  res.send(controller.overTimeData())
+async function overTimeData (req, res) {
+  res.send(await controller.overTimeData())
 }
 
 function topItems (req, res) {
@@ -23,8 +23,8 @@ function queryTypes (req, res) {
   res.send(controller.queryTypes())
 }
 
-function forwardDestinations (req, res) {
-  res.send(controller.forwardDestinations())
+async function forwardDestinations (req, res) {
+  res.send(await controller.forwardDestinations())
 }
 
 function querySources (req, res) {
