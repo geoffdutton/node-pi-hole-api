@@ -37,6 +37,15 @@ async function apiHandler (req, res) {
     if (query.hasOwnProperty('getQueryTypes')) {
       _.assign(result, controller.queryTypes())
     }
+
+    if (query.hasOwnProperty('getClientNames')) {
+      _.assign(result, await controller.ftl.getClientNames())
+    }
+
+    if (query.hasOwnProperty('overTimeDataClients')) {
+      _.assign(result, await controller.ftl.clientsOverTime())
+    }
+
     if (query.hasOwnProperty('type') || query.hasOwnProperty('version')) {
       _.assign(result, {
         type: 'FTL',

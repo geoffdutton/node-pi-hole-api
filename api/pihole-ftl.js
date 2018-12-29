@@ -17,7 +17,7 @@ class PiHoleFTL {
     const lines = await this.send('stats')
     const response = {}
     lines.forEach(line => {
-      const [key, val] = line.trim().split(' ')
+      const [key, val] = line
       response[key] = parseStringNumber(val)
     })
 
@@ -31,7 +31,7 @@ class PiHoleFTL {
       ads_over_time: {}
     }
     lines.forEach(line => {
-      const [time, domains, ads] = line.trim().split(' ')
+      const [time, domains, ads] = line
       response.domains_over_time[time] = _.toInteger(domains)
       response.ads_over_time[time] = _.toInteger(ads)
     })
@@ -40,7 +40,37 @@ class PiHoleFTL {
   }
 
   _parseRawResponse (response) {
-    return response.split(/\r?\n/).filter(l => _.trim(l) && _.trim(l) !== EOM)
+    return response.split(/\r?\n/)
+      .filter(l => _.trim(l) && _.trim(l) !== EOM)
+      .map(l => l.trim().split(' '))
+  }
+
+  async getClientNames () {
+    const lines = await this.send('client-names')
+    const response = {
+      clients: [],
+    }
+    lines.forEach(line => {
+      const [ name, ip ] = line
+      response.clients.push({
+        name,
+        ip
+      })
+    })
+
+    return response
+  }
+
+  // 'ClientsoverTime'
+  async clientsOverTime () {
+    const lines = await this.send('ClientsoverTime')
+    const response = {}
+    lines.forEach(line => {
+      const timestmap = line.shift()
+      response[timestmap] = line.map(c => parseFloat(c))
+    })
+
+    return { over_time: response }
   }
 
   send (command) {
