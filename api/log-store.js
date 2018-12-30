@@ -127,6 +127,11 @@ class LogStore {
     return data
   }
 
+  // alias
+  async summaryRaw () {
+    return this.summary()
+  }
+
   _getOverTimeData (arr) {
     return _(arr).takeRight(24).reduce((result, { hour, count }) => {
       result[hour] = count
@@ -142,26 +147,17 @@ class LogStore {
     return _(counts).toPairs().orderBy('1', 'desc').take(10).fromPairs()
   }
 
-  topItems () {
-    return {
-      top_queries: this._getTopItems(this.domainsCount),
-      top_ads: this._getTopItems(this.adsCount)
-    }
+  topItems (query) {
+    return this.ftl.topItems(query)
   }
 
-  recentItems (count) {
-    const queries = _(this.logs)
-      .takeRight(count)
-      .map((data) => ({
-        date: data.date.format('YYYY-MM-DD'),
-        time: data.date.format('h:m:s a'),
-        domain: data.domain,
-        ip: data.source
-      }))
-      .value()
-    return {
-      recent_queries: queries
-    }
+  topClients (query) {
+    return this.ftl.topClients(query)
+  }
+
+  // alias
+  getQuerySources (query) {
+    return this.topClients(query)
   }
 
   queryTypes () {

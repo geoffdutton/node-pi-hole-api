@@ -15,10 +15,6 @@ function topItems (req, res) {
   res.send(controller.topItems())
 }
 
-function recentItems (req, res) {
-  res.send(controller.recentItems(req.query.count || 20))
-}
-
 function queryTypes (req, res) {
   res.send(controller.queryTypes())
 }
@@ -38,7 +34,6 @@ function queries (req, res) {
 router.get('/summary', summary)
 router.get('/overTimeData', overTimeData)
 router.get('/topItems', topItems)
-router.get('/recentItems', recentItems)
 router.get('/queryTypes', queryTypes)
 router.get('/forwardDestinations', forwardDestinations)
 router.get('/querySources', querySources)
