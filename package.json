@@ -7,7 +7,7 @@
     "lint": "standard -r . --fix",
     "start": "node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
-    "test": "NODE_ENV=test jest --coverage",
+    "test": "yarn lint && NODE_ENV=test jest --coverage",
     "tdd": "NODE_ENV=test jest --watch",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },

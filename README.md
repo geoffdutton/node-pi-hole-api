@@ -1,21 +1,26 @@
-# pi-hole-api
+# node-pi-hole-api
+[![Build Status](https://travis-ci.org/geoffdutton/node-pi-hole-api.svg?branch=develop)](https://travis-ci.org/geoffdutton/node-pi-hole-api)
+[![Coverage Status](https://coveralls.io/repos/github/geoffdutton/node-pi-hole-api/badge.svg?branch=develop)](https://coveralls.io/github/geoffdutton/node-pi-hole-api?branch=develop)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-[Pi-hole](https://github.com/pi-hole/pi-hole) API server written with Node.JS
+[![Dependencies](https://david-dm.org/geoffdutton/node-pi-hole-api.svg)](https://david-dm.org/geoffdutton/node-pi-hole-api)
 
-# Install
+[Pi-hole](https://github.com/pi-hole/pi-hole) An updated API server written with Node.JS
 
-- Install NodeJS v6
-  - https://github.com/sdesalas/node-pi-zero
+## Install
 
-- `git clone git@github.com:xlc/pi-hole-api.git`
-- `cd pi-hole-api`
+- Install Node 8+
+  - https://github.com/creationix/nvm
+
+- `curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash`
+- `nvm install 8`
 - `npm install --production`
     - or use `yarn` becuase it is much faster
 - `npm start`
 - A local server will be started on port 3000
   - `curl http://localhost:3000/admin/api.php?summary` to get summary
 
-# Integrate with existing pi-hole admin panel
+## Integrate with existing pi-hole admin panel
 
 Follow [this guide](https://github.com/pi-hole/pi-hole/wiki/Nginx-configuration-instead-of-the-default-lighttpd-and-php-cgi-option) to setup nginx server
 and use this nginx config in order to proxy requests to `/admin/api.php` to our node server
@@ -53,10 +58,10 @@ server {
 }
 ```
 
-# Why
+## Why
 
-The existing php API server is super inefficient that is unusable on my Raspberry Pi Model A.
-Therefore I want a faster working replacement of the API server.
+I wanted to take a crack at porting the pi-hole PHP server side code to Node JS.
+Major credit goes to: [xlc/pi-hole-api](https://github.com/xlc/pi-hole-api). This is an updated version of that.
 
 ## Development Tips
 
