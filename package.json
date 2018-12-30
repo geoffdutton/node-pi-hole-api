@@ -8,14 +8,17 @@
     "start": "node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
     "test": "NODE_ENV=test jest --coverage",
-    "tdd": "NODE_ENV=test jest --watch"
+    "tdd": "NODE_ENV=test jest --watch",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/geoffdutton/node-pi-hole-api.git"
   },
   "standard": {
-    "env": ["jest"]
+    "env": [
+      "jest"
+    ]
   },
   "keywords": [
     "pi-hole"
@@ -39,6 +42,7 @@
     "through2": "^3.0.0"
   },
   "devDependencies": {
+    "coveralls": "^3.0.2",
     "jest": "^23.6.0",
     "nodemon": "^1.18.9",
     "standard": "^12.0.1",
