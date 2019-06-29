@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/geoffdutton/node-pi-hole-api/badge.svg?branch=develop)](https://coveralls.io/github/geoffdutton/node-pi-hole-api?branch=develop)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-[![Dependencies](https://david-dm.org/geoffdutton/node-pi-hole-api.svg)](https://david-dm.org/geoffdutton/node-pi-hole-api)
+[![Dependencies](https://david-dm.org/geoffdutton/node-pi-hole-api.svg)](https://david-dm.org/geoffdutton/node-pi-hole-api) [![Greenkeeper badge](https://badges.greenkeeper.io/geoffdutton/node-pi-hole-api.svg)](https://greenkeeper.io/)
 
 [Pi-hole](https://github.com/pi-hole/pi-hole) An updated API server written with Node.JS
 
